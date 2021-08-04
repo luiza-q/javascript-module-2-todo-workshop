@@ -33,13 +33,28 @@ const setFilters = (updates) => {
     }
 }
 
+document.querySelector('#search-text').addEventListener('input', (e) => {
+    const updates = {
+        searchTitle: e.target.value
+    };
+    
+    setFilters(updates);
+    renderTodos(todos);    
+});
 
+document.querySelector('#show-finished').addEventListener('change', (e) => {
+    setFilters({
+        showFinished: e.target.checked
+    })
+    renderTodos(todos)
+});
 
-
-
-
-
-
+document.querySelector('#show-unfinished').addEventListener('change', (e) => {
+    setFilters({
+        showUnfinished: e.target.checked
+    })
+    renderTodos(todos)
+});
 
 const createTodo = (text) => {
     todos.push({
@@ -101,8 +116,19 @@ const renderTodos = (todos) => {
     const todoList = document.querySelector('#todos');
     todoList.innerHTML = '';
 
-    if (todos.length > 0) {
-        todos.forEach((todo) => {
+    let filteredTodos = todos.filter((todo) => todo.title.includes(filters.searchTitle));
+
+    if (filters.showFinished && filters.showUnfinished) {
+
+    } else if (filters.showFinished) {
+        filteredTodos = filteredTodos.filter(todo => todo.completed)
+    } else if (filters.showUnfinished) {
+        filteredTodos = filteredTodos.filter(todo => !todo.completed)
+    } 
+
+    if (filteredTodos.length > 0) {
+
+        filteredTodos.forEach((todo) => {
             todoList.appendChild(generateTodoDOM(todo));
         })
     } else {
